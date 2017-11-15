@@ -8,8 +8,8 @@ app = Flask(__name__)
 #Configure MySQL
 conn = pymysql.connect(host='localhost',
                        user='root',
-                       password='root',
-                       db='meetup3',
+                       password='',
+                       db='pricosha',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 
@@ -92,7 +92,7 @@ def home():
 	cursor.close()
 	return render_template('home.html', username=username, posts=data)
 
-		
+
 @app.route('/post', methods=['GET', 'POST'])
 def post():
 	username = session['username']
@@ -108,7 +108,7 @@ def post():
 def logout():
 	session.pop('username')
 	return redirect('/')
-		
+
 app.secret_key = 'some key that you will never guess'
 #Run the app on localhost port 5000
 #debug = True -> you don't have to restart flask
