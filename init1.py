@@ -88,7 +88,10 @@ def registerAuth():
 def home():
 	username = session['username']
 	cursor = conn.cursor();
-	query = 'SELECT ts, blog_post FROM blog WHERE username = %s ORDER BY ts DESC'
+	query = '''SELECT content.ID, content.content_name FROM content, person, member, share
+    WHERE person.username = %s AND person.username = member.username
+    AND member.username = share.username AND content.ID = share.ID
+    '''
 	cursor.execute(query, (username))
 	data = cursor.fetchall()
 	cursor.close()
