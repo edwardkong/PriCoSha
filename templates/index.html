@@ -2,13 +2,15 @@
 <html>
 
 <head>
-
+	<link rel = "stylesheet" href="/static/milligram.css">
 </head>
 
 <body>
 {% if not message %}
-	<a href="/login">Login</a>
-	<a href="/register">Register</a>
+	<center>
+			<a class="button" href="/login">Login</a>
+			<a class="button" href="/register">Register</a>
+	</center>
 {% endif %}
 
 {% if message %}

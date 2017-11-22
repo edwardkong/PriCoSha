@@ -1,6 +1,6 @@
 CREATE TABLE Person(
 	username VARCHAR (50),
-	password VARCHAR (50),
+	password VARCHAR (64),
 	first_name VARCHAR (50),
 	last_name VARCHAR (50),
 	PRIMARY KEY (username)
@@ -59,7 +59,7 @@ CREATE TABLE Member(
 
 CREATE TABLE Share(
 	id INT,
-group_name VARCHAR (50),	
+group_name VARCHAR (50),
 username VARCHAR (50),
 PRIMARY KEY (id, group_name, username),
 FOREIGN KEY (id) REFERENCES Content(id),
