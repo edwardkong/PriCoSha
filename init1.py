@@ -2,6 +2,7 @@
 from flask import Flask, render_template, request, session, url_for, redirect
 import pymysql.cursors
 import hashlib
+import datetime
 
 #Initialize the app from Flask
 app = Flask(__name__)
@@ -102,9 +103,13 @@ def home():
 def post():
 	username = session['username']
 	cursor = conn.cursor();
-	blog = request.form['blog']
-	query = 'INSERT INTO blog (blog_post, username) VALUES(%s, %s)'
-	cursor.execute(query, (blog, username))
+	timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+	path = request.form['path']
+	content_name = request.form['title']
+	public = request.form['is_pub']
+	query = '''INSERT into Content(username, timest, file_path, content_name, public)
+	values (%s , %s, %s, %s, %s)'''
+	cursor.execute(query, (username, timestamp, path, content_name, public))
 	conn.commit()
 	cursor.close()
 	return redirect(url_for('home'))
@@ -113,6 +118,31 @@ def post():
 def logout():
 	session.pop('username')
 	return redirect('/')
+
+@app.route('/friendgroups')
+def friendgroups():
+	username = session['username']
+	cursor = conn.cursor();
+	query1 = '''SELECT group_name FROM person Natural Join friendgroup
+	WHERE person.username = %s'''
+	cursor.execute(query1,username)
+	ownedFG = cursor.fetchall()
+	cursor.close()
+	print ownedFG
+	return render_template('friendgroups.html', ownFG = ownedFG)
+
+@app.route('/createFG', methods=['GET', 'POST'])
+def createFG():
+	username = session['username']
+	cursor = conn.cursor();
+	gname = request.form["gname"]
+	description = request.form["description"]
+	query = '''INSERT into friendgroup values (%s, %s, %s)'''
+	cursor.execute(query,(gname,username,description))
+	conn.commit()
+	cursor.close()
+	return redirect(url_for('friendgroups'))
+
 
 app.secret_key = 'some key that you will never guess'
 #Run the app on localhost port 5000

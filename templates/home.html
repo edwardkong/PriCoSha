@@ -4,11 +4,23 @@
 	<link rel = "stylesheet" href="/static/style.css">
 </head>
 <body>
+
+<a class="button" href="/home"> Home </a>
+<a class="button" href="/friendgroups"> FriendGroups </a>
+<a class="button" href="/myposts"> My Posts </a>
+<a class="button" href="/users"> Users </a>
+<a class="button" href="/logout">Logout</a>
+<br> <br>
+<h1>Welcome {{username}}</h1><hr>
 <form action="/post" method="POST">
-	<h1>Welcome {{username}}</h1>
-	<input type="text" name = "blog" placeholder="post" required/> </br>
+	<h4> Make a Post </h4>
+	<input type="text" name = "title" placeholder="Title" required/> </br>
+	<input type="text" name = "path" placeholder="link" required/> </br>
+	<input type="radio" name = "is_pub" value = "1" required/> Public </br>
+	<input type="radio" name = "is_pub" value = "0" required/> Private </br>
 	<input type="submit" value = Post />
 </form>
+
 
 <style type="text/css">
 	table, th, td{
@@ -28,7 +40,7 @@
 {% endfor %}
 </table>
 
-<a href="/logout">Logout</a>
+
 
 </body>
 

@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="/static/milligram.css">
+    <link rel="stylesheet" href="/static/style.css">
+  </head>
+  <body>
+    <a class="button" href="/home"> Home </a>
+    <a class="button" href="/friendgroups"> FriendGroups </a>
+    <a class="button" href="/myposts"> My Posts </a>
+    <a class="button" href="/users"> Users </a>
+    <a class="button" href="/logout">Logout</a>
+    <br> <br>
+    <form action="/createFG" method="Post">
+      <h3> Create A FriendGroup </h3>
+      <input type="text" name="gname" placeholder="Group Name" required/><br>
+      <input type="text" name="description" placeholder="Description"> <br>
+      <input type="submit" value="Create FriendGroup"> <br>
+    </form>
+    <table>
+      <th>FriendGroups You Own</th> <th>FriendGroups You Are A Member Of </th>
+      {% for line in ownFG %}
+      <tr>
+        <td> {{ line.group_name }} </td>
+      </tr>
+      {% endfor %}
+    </table>
+    <hr>
+  </body>
+</html>
