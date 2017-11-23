@@ -1,10 +1,11 @@
 <html>
 <head>
 	<link rel = "stylesheet" href="/static/milligram.css">
+	<link rel="icon" type="image/gif" href="/static/icons/group-button.png" />
 </head>
 <body>
 <form  action="/loginAuth" method="POST">
-	
+
 	<input type="text" name = "username" placeholder="username" required/> </br>
 	<input type="password" name = "password" placeholder="password" required/></br>
 	<input type="submit" value = Login />
@@ -13,8 +14,13 @@
 	{% endif %}
 </form>
 
-<a href="/">Go back</a>
-
+<a class="button" href="/">Go back</a>
+<div>Icons made by
+	<a href="https://www.flaticon.com/authors/zurb" title="Zurb">Zurb</a> from
+	<a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
+	<a href="http://creativecommons.org/licenses/by/3.0/"
+	title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
+</div>
 </body>
 
 
