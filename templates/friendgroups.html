@@ -20,14 +20,26 @@
     </form>
     <table>
       <th>FriendGroups You Own</th> <th>FriendGroups You Are A Member Of </th>
-      {% for line in ownFG %}
-      <tr>
-        <td> {{ line.group_name }} </td>
-      </tr>
-      {% endfor %}
+      <tr><td>
+      <table>
+        {% for line in ownFG %}
+        <tr>
+          <td> <b> {{ line.group_name }} </b> </td>
+        </tr>
+        {% endfor %}
+      </table> </td>
+      <td>
+        <table>
+          {% for line in memFG %}
+          <tr>
+            <td> <b> {{ line.group_name }}</b> owned by: <b> {{ line.username_creator }} </b></td>
+          </tr>
+          {% endfor %}
+        </table>
+      </td> </tr>
     </table>
     <hr>
-    
+
     <div>Icons made by
     	<a href="https://www.flaticon.com/authors/zurb" title="Zurb">Zurb</a> from
     	<a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by

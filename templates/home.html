@@ -3,8 +3,12 @@
 	<link rel = "stylesheet" href="/static/milligram.css"/>
 	<link rel = "stylesheet" href="/static/style.css"/>
 	<link rel="icon" type="image/gif" href="/static/icons/group-button.png" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 </head>
 <body>
+
+
 
 <a class="button" href="/home"> Home </a>
 <a class="button" href="/friendgroups"> FriendGroups </a>
@@ -17,8 +21,14 @@
 	<h4> Make a Post </h4>
 	<input type="text" name = "title" placeholder="Title" required/> </br>
 	<input type="text" name = "path" placeholder="link" required/> </br>
-	<input type="radio" name = "is_pub" value = "1" required/> Public </br>
-	<input type="radio" name = "is_pub" value = "0" required/> Private </br>
+	<input type="radio" id = "public" name = "is_pub" value = "1" required/> Public </br>
+	<input type="radio" id ="private" name = "is_pub" value = "0" required/> Private </br>
+	<select id="friendgroup" name = "friendgroup" >
+		{% for line in ownFG %}
+			<option value={{line.group_name}}> {{line.group_name}} </option>
+		{% endfor %}
+	</select>
+
 	<input type="submit" value = Post />
 </form>
 
@@ -30,13 +40,13 @@
 </style>
 
 <table>
-	<th>Time</th>
-	<th>Post</th>
+	<th>Content Name</th>
+	<th>Content ID</th>
 
 {% for line in posts %}
 	<tr>
-		<td>{{line.ts}}</td>
-		<td>{{line.blog_post}}</td>
+		<td>{{line.content_name}}</td>
+		<td>{{line.ID}}</td>
 	</tr>
 {% endfor %}
 </table>
@@ -48,6 +58,10 @@
 	<a href="http://creativecommons.org/licenses/by/3.0/"
 	title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
 </div>
+
+	<script src="/static/js/revealform.js"> </script>
+
+
 </body>
 
 

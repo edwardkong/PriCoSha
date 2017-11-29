@@ -89,14 +89,18 @@ def registerAuth():
 def home():
 	username = session['username']
 	cursor = conn.cursor();
-	query = '''SELECT content.ID, content.content_name FROM content, person, member, share
-    WHERE person.username = %s AND person.username = member.username
-    AND member.username = share.username AND content.ID = share.ID
+	query = '''SELECT content.ID, content.content_name FROM content NATURAL JOIN person NATURAL JOIN member NATURAL JOIN share
+    WHERE person.username = %s
     '''
 	cursor.execute(query, (username))
 	data = cursor.fetchall()
+	print data
+	query = '''SELECT group_name FROM person Natural Join friendgroup
+	WHERE person.username = %s'''
+	cursor.execute(query, (username))
+	ownedFG = cursor.fetchall()
 	cursor.close()
-	return render_template('home.html', username=username, posts=data)
+	return render_template('home.html', username=username, posts=data, ownFG=ownedFG)
 
 
 @app.route('/post', methods=['GET', 'POST'])
@@ -110,6 +114,14 @@ def post():
 	query = '''INSERT into Content(username, timest, file_path, content_name, public)
 	values (%s , %s, %s, %s, %s)'''
 	cursor.execute(query, (username, timestamp, path, content_name, public))
+
+	if (public == "0"):
+		group_name = request.form['friendgroup']
+		query = "SELECT Max(id) AS max FROM Content"
+		cursor.execute(query)
+		id = cursor.fetchone()['max']
+		query = '''INSERT into share VALUES( %s, %s, %s)'''
+		cursor.execute(query, (id, group_name, username))
 	conn.commit()
 	cursor.close()
 	return redirect(url_for('home'))
@@ -123,22 +135,29 @@ def logout():
 def friendgroups():
 	username = session['username']
 	cursor = conn.cursor();
-	query1 = '''SELECT group_name FROM person Natural Join friendgroup
+	query = '''SELECT group_name FROM person Natural Join friendgroup
 	WHERE person.username = %s'''
-	cursor.execute(query1,username)
+	cursor.execute(query,username)
 	ownedFG = cursor.fetchall()
+	query = '''SELECT group_name, username_creator FROM member WHERE username = %s'''
+	cursor.execute(query,username)
+	memberFG = cursor.fetchall()
+	print memberFG
 	cursor.close()
 	print ownedFG
-	return render_template('friendgroups.html', ownFG = ownedFG)
+	return render_template('friendgroups.html', ownFG = ownedFG, memFG = memberFG)
 
 @app.route('/createFG', methods=['GET', 'POST'])
 def createFG():
 	username = session['username']
 	cursor = conn.cursor();
 	gname = request.form["gname"]
+	gname = gname.replace(" ", "")
 	description = request.form["description"]
 	query = '''INSERT into friendgroup values (%s, %s, %s)'''
 	cursor.execute(query,(gname,username,description))
+	query2 = '''INSERT into member values (%s, %s, %s)'''
+	cursor.execute(query2,(username,gname,username))
 	conn.commit()
 	cursor.close()
 	return redirect(url_for('friendgroups'))
