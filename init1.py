@@ -91,6 +91,7 @@ def home():
 	cursor = conn.cursor();
 	query = '''SELECT content.ID, content.content_name FROM content NATURAL JOIN person NATURAL JOIN member NATURAL JOIN share
     WHERE person.username = %s
+	ORDER BY content.ID DESC
     '''
 	cursor.execute(query, (username))
 	data = cursor.fetchall()
