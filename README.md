@@ -21,7 +21,7 @@ A system​ ​for​ ​privately​ ​sharing​ ​content​ ​items among
 # Additional Features
 1. Defriend
 2. Direct Message (Send a Private Message to a Friend that only the 2 of you can see.)
-3.
-4.
-5.
+3. View Friends list (Everyone you share a mutual friend group with)
+4. View posts visible to you by a specific friend
+5. Delete your post
 
