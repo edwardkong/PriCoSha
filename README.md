@@ -20,7 +20,7 @@ A system​ ​for​ ​privately​ ​sharing​ ​content​ ​items among
 
 # Additional Features
 1. Defriend
-2. 
+2. Direct Message (Send a Private Message to a Friend that only the 2 of you can see.)
 3.
 4.
 5.
