@@ -132,6 +132,19 @@ def logout():
 	session.pop('username')
 	return redirect('/')
 
+@app.route('/friends')
+def friends():
+        username = session['username']
+        cursor = conn.cursor();
+        query = '''SELECT DISTINCT username FROM person Natural Join member
+                WHERE member.group_name = group_name
+                AND member.username_creator = username_creator
+                AND username != %s'''
+        cursor.execute(query, username)
+        yourFriends = cursor.fetchall()
+        print yourFriends
+        return render_template('friends.html', urFriends = yourFriends)
+
 @app.route('/friendgroups')
 def friendgroups():
 	username = session['username']
