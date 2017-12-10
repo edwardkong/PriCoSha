@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="/static/milligram.css">
     <link rel="stylesheet" href="/static/style.css">
     <link rel="icon" type="image/gif" href="/static/icons/group-button.png" />
-    <title> FriendGroups </title>
+    <title> Messages </title>
   </head>
   <body>
     <a class="button" href="/home"> Home </a>
@@ -14,31 +14,25 @@
     <a class="button" href="/users"> Users </a>
     <a class="button" href="/logout">Logout</a>
     <br> <br>
-    <form action="/createFG" method="Post">
-      <h3> Create A FriendGroup </h3>
-      <input type="text" name="gname" placeholder="Group Name" required/><br>
-      <input type="text" name="description" placeholder="Description"> <br>
-      <input type="submit" value="Create FriendGroup"> <br>
+    <form action="/sendMessage" method="Post">
+      <h3> Send a Message </h3>
+      <select id="recipient" name = "recipient" >
+    		{% for line in urFriends %}
+    			<option value={{line.username}}> {{line.username}} </option>
+    		{% endfor %}
+    	</select>
+      <input type="text" name = "message" placeholder="Message" required/> </br>
+      <input type="submit" value="Send Message"> <br>
     </form>
     <table>
-      <th>FriendGroups You Own</th> <th>FriendGroups You Are A Member Of </th>
-      <tr><td>
-      <table>
-        {% for line in ownFG %}
-        <tr>
-          <td> <b> {{ line.group_name }} </b> </td>
-        </tr>
-        {% endfor %}
-      </table> </td>
-      <td>
-        <table>
-          {% for line in memFG %}
-          <tr>
-            <td> <b> {{ line.group_name }}</b> owned by: <b> {{ line.username_creator }} </b></td>
-          </tr>
-          {% endfor %}
-        </table>
-      </td> </tr>
+      <th>Messages</th>
+      {%for line in messages %}
+      <tr>
+        <td>
+          {{line.message}} <br> <b>Sent By: </b> {{line.sender}} On {{line.timest}}
+        </td>
+     </tr>
+     {% endfor %}
     </table>
     <hr>
 

@@ -65,3 +65,14 @@ PRIMARY KEY (id, group_name, username),
 FOREIGN KEY (id) REFERENCES Content(id),
 FOREIGN KEY (group_name, username) REFERENCES FriendGroup(group_name, username)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE Message(
+	id INT AUTO_INCREMENT,
+	sender VARCHAR (50),
+	recipient VARCHAR (50),
+	timest TIMESTAMP,
+	message VARCHAR(300),
+	PRIMARY KEY (id),
+	FOREIGN KEY (sender) REFERENCES Person (username),
+	FOREIGN KEY (recipient) REFERENCES Person (username)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

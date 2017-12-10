@@ -176,6 +176,38 @@ def createFG():
 	cursor.close()
 	return redirect(url_for('friendgroups'))
 
+@app.route('/messages', methods=['GET', 'POST'])
+def messages():
+	username = session['username']
+	cursor = conn.cursor();
+	query = '''SELECT DISTINCT username FROM person Natural Join member
+			WHERE member.group_name = group_name
+			AND member.username_creator = username_creator
+			AND username != %s'''
+	cursor.execute(query, username)
+	yourFriends = cursor.fetchall()
+	print yourFriends
+	query = '''SELECT sender, timest, message FROM message WHERE recipient = %s'''
+	cursor.execute(query, username)
+	messages = cursor.fetchall()
+	conn.commit()
+	cursor.close()
+	return render_template('messages.html', urFriends = yourFriends, messages = messages)
+
+@app.route('/sendMessage', methods=['GET', 'POST'])
+def sendMessage():
+	username = session['username']
+	cursor = conn.cursor();
+	timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+	recipient = request.form['recipient']
+	message = request.form['message']
+	query = '''INSERT into message(sender, recipient, timest, message) values
+	(%s, %s, %s, %s) '''
+	cursor.execute(query, (username, recipient, timestamp, message))
+	print message
+	conn.commit()
+	cursor.close()
+	return redirect(url_for('messages'))
 
 app.secret_key = 'some key that you will never guess'
 #Run the app on localhost port 5000
