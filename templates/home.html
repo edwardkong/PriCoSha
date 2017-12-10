@@ -35,22 +35,41 @@
 </form>
 
 
-<style type="text/css">
-	table, th, td{
-		border: 1px solid black;
-	}
-</style>
+
 
 <table>
-	<th>Content Name</th>
-	<th>Content ID</th>
+	<tr><td>
+	<table>
+	<th> Private </th>
+	{% for line in posts %}
+		<tr>
+			<td>
+				<i>{{line.content_name}}</i> <br>
+				ID: {{line.ID}} <br>
+				Posted By: <i> {{line.username}} </i> ({{line.group_name}})<br>
+				{{line.timest}}
+			</td>
 
-{% for line in posts %}
-	<tr>
-		<td>{{line.content_name}}</td>
-		<td>{{line.ID}}</td>
-	</tr>
-{% endfor %}
+		</tr>
+	{% endfor %}
+	</table>
+	</td>
+	<td>
+	<table>
+	<th> Public </th>
+	{% for line in public %}
+		<tr>
+			<td>
+				<i>{{line.content_name}}</i> <br>
+				ID: {{line.ID}} <br>
+				Posted By: <i>{{line.username}} </i> <br>
+				{{line.timest}}
+			</td>
+
+		</tr>
+	{% endfor %}
+	</table>
+	</td></tr>
 </table>
 
 

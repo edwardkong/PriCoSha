@@ -89,19 +89,30 @@ def registerAuth():
 def home():
 	username = session['username']
 	cursor = conn.cursor();
-	query = '''SELECT content.ID, content.content_name FROM content NATURAL JOIN person NATURAL JOIN member NATURAL JOIN share
-    WHERE person.username = %s
+	query = '''SELECT content.ID, content.content_name, share.username, timest, member.group_name
+	FROM member JOIN share
+	ON member.group_name = share.group_name
+	JOIN content ON
+	share.id = content.id
+	WHERE  member.username = %s
 	ORDER BY content.ID DESC
     '''
 	cursor.execute(query, (username))
 	data = cursor.fetchall()
 	print data
+
 	query = '''SELECT group_name FROM person Natural Join friendgroup
 	WHERE person.username = %s'''
 	cursor.execute(query, (username))
 	ownedFG = cursor.fetchall()
+
+	query = '''SELECT content.ID, content.content_name, username, timest FROM content
+	WHERE  content.public
+	ORDER BY content.ID DESC'''
+	cursor.execute(query)
+	public = cursor.fetchall()
 	cursor.close()
-	return render_template('home.html', username=username, posts=data, ownFG=ownedFG)
+	return render_template('home.html', username=username, posts=data, ownFG=ownedFG, public = public)
 
 
 @app.route('/post', methods=['GET', 'POST'])
