@@ -22,6 +22,21 @@ A system​ ​for​ ​privately​ ​sharing​ ​content​ ​items among
 1. Defriend
 2. Direct Message (Send a Private Message to a Friend that only the 2 of you can see.)
 3. View Friends list (Everyone you share a mutual friend group with)
-4. View posts visible to you by a specific friend
+4. View your posts
 5. Delete your post
 
+# Currently Implemented
+1. Register/Login
+2. Homepage, view content
+3. Post content
+4. View Friends List
+5. View your posts
+6. Direct Messaging
+
+# Need to Implement
+1. View content details (Tags, comments)
+2. Manage Tags
+3. Tag a content Item
+4. Add friend
+5. Defriend
+6. Delete post
