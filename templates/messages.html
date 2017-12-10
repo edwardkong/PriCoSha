@@ -24,12 +24,22 @@
       <input type="text" name = "message" placeholder="Message" required/> </br>
       <input type="submit" value="Send Message"> <br>
     </form>
-    <table>
+    <table id="sent">
+      <th>Sent</th>
+      {%for line in sent %}
+      <tr>
+        <td>
+          {{line.message}} <br> <b>Sent To: </b> {{line.recipient}} <br> {{line.timest}}
+        </td>
+     </tr>
+     {% endfor %}
+    </table>
+    <table id="recieved">
       <th>Messages</th>
       {%for line in messages %}
       <tr>
         <td>
-          {{line.message}} <br> <b>Sent By: </b> {{line.sender}} On {{line.timest}}
+          {{line.message}} <br> <b>Sent By: </b> {{line.sender}} <br> {{line.timest}}
         </td>
      </tr>
      {% endfor %}

@@ -187,12 +187,15 @@ def messages():
 	cursor.execute(query, username)
 	yourFriends = cursor.fetchall()
 	print yourFriends
-	query = '''SELECT sender, timest, message FROM message WHERE recipient = %s'''
+	query = '''SELECT sender, timest, message FROM message WHERE recipient = %s ORDER BY timest DESC'''
 	cursor.execute(query, username)
 	messages = cursor.fetchall()
+	query = '''SELECT recipient, timest, message FROM message WHERE sender = %s ORDER BY timest DESC'''
+	cursor.execute(query, username)
+	sentMessages = cursor.fetchall()
 	conn.commit()
 	cursor.close()
-	return render_template('messages.html', urFriends = yourFriends, messages = messages)
+	return render_template('messages.html', urFriends = yourFriends, messages = messages ,sent = sentMessages)
 
 @app.route('/sendMessage', methods=['GET', 'POST'])
 def sendMessage():
