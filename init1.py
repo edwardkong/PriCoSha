@@ -145,6 +145,17 @@ def friends():
         print yourFriends
         return render_template('friends.html', urFriends = yourFriends)
 
+@app.route('/myposts')
+def myposts():
+        username = session['username']
+        cursor = conn.cursor();
+        query = '''SELECT * FROM Content
+                WHERE username = %s'''
+        cursor.execute(query, username)
+        yourPosts = cursor.fetchall()
+        print yourPosts
+        return render_template('myposts.html', posts = yourPosts)
+
 @app.route('/friendgroups')
 def friendgroups():
 	username = session['username']
