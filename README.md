@@ -24,6 +24,7 @@ A system​ ​for​ ​privately​ ​sharing​ ​content​ ​items among
 3. View Friends list (Everyone you share a mutual friend group with)
 4. View your posts
 5. Delete your post
+6. Create and View FriendGroups
 
 # Currently Implemented
 1. Register/Login
@@ -32,6 +33,7 @@ A system​ ​for​ ​privately​ ​sharing​ ​content​ ​items among
 4. View Friends List
 5. View your posts
 6. Direct Messaging
+7. Create and View FriendGroups
 
 # Need to Implement
 1. View content details (Tags, comments)
