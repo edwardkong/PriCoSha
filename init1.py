@@ -232,7 +232,7 @@ def messages():
 			WHERE username != %s
 			AND username_creator IN (SELECT username_creator FROM member WHERE username = %s)
 			AND group_name IN (SELECT group_name FROM member WHERE username = %s)'''
-	cursor.execute(query, username)
+	cursor.execute(query, (username, username, username))
 	yourFriends = cursor.fetchall()
 	print yourFriends
 	query = '''SELECT sender, timest, message FROM message WHERE recipient = %s ORDER BY timest DESC'''
@@ -304,6 +304,16 @@ def addFriend():
 		print("That didn't work!")
 		return render_template('friends.html', error = error)
 
+@app.route('/users')
+def users():
+	cursor = conn.cursor()
+	query = '''SELECT username, first_name, last_name
+	FROM person'''
+	cursor.execute(query)
+	users = cursor.fetchall()
+	cursor.close()
+	return render_template('users.html', users = users)
+	
 app.secret_key = 'some key that you will never guess'
 #Run the app on localhost port 5000
 #debug = True -> you don't have to restart flask
