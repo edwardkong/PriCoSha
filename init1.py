@@ -35,7 +35,7 @@ def register():
 def loginAuth():
 	#grabs information from the forms
 	username = request.form['username']
-	password = hashlib.sha256(request.form['password']).hexdigest()
+	password = hashlib.sha256(request.form['password'].encode('utf-8')).hexdigest()
 
 	#cursor used to send queries
 	cursor = conn.cursor()
@@ -62,7 +62,7 @@ def loginAuth():
 def registerAuth():
 	#grabs information from the forms
 	username = request.form['username']
-	password = hashlib.sha256(request.form['password']).hexdigest()
+	password = hashlib.sha256(request.form['password'].encode('utf-8')).hexdigest()
 	f_name = request.form['first_name']
 	l_name = request.form['last_name']
 	#cursor used to send queries
@@ -99,7 +99,7 @@ def home():
     '''
 	cursor.execute(query, (username))
 	data = cursor.fetchall()
-	print data
+	print(data)
 
 	query = '''SELECT group_name FROM person Natural Join friendgroup
 	WHERE person.username = %s'''
@@ -179,7 +179,7 @@ def friends():
                 AND username != %s'''
         cursor.execute(query, username)
         yourFriends = cursor.fetchall()
-        print yourFriends
+        print(yourFriends)
         return render_template('friends.html', urFriends = yourFriends)
 
 @app.route('/myposts')
@@ -190,7 +190,7 @@ def myposts():
                 WHERE username = %s'''
         cursor.execute(query, username)
         yourPosts = cursor.fetchall()
-        print yourPosts
+        print(yourPosts)
         return render_template('myposts.html', posts = yourPosts)
 
 @app.route('/friendgroups')
@@ -204,9 +204,9 @@ def friendgroups():
 	query = '''SELECT group_name, username_creator FROM member WHERE username = %s'''
 	cursor.execute(query,username)
 	memberFG = cursor.fetchall()
-	print memberFG
+	print(memberFG)
 	cursor.close()
-	print ownedFG
+	print(ownedFG)
 	return render_template('friendgroups.html', ownFG = ownedFG, memFG = memberFG)
 
 @app.route('/createFG', methods=['GET', 'POST'])
@@ -234,7 +234,7 @@ def messages():
 			AND username != %s'''
 	cursor.execute(query, username)
 	yourFriends = cursor.fetchall()
-	print yourFriends
+	print(yourFriends)
 	query = '''SELECT sender, timest, message FROM message WHERE recipient = %s ORDER BY timest DESC'''
 	cursor.execute(query, username)
 	messages = cursor.fetchall()
@@ -255,7 +255,7 @@ def sendMessage():
 	query = '''INSERT into message(sender, recipient, timest, message) values
 	(%s, %s, %s, %s) '''
 	cursor.execute(query, (username, recipient, timestamp, message))
-	print message
+	print(message)
 	conn.commit()
 	cursor.close()
 	return redirect(url_for('messages'))
@@ -303,6 +303,29 @@ def addFriend():
 		error = "This friendgroup does not exist!"
 		print("That didn't work!")
 		return render_template('friends.html', error = error)
+
+@app.route('/tagContent', methods=['GET', 'POST'])
+def tagContent():
+		username = session['username']
+		cursor = conn.cursor()
+		username_taggee = request.form['tag']
+		if(username_taggee == username):
+			return render_template('home.html')
+			# ins = '''INSERT into tag values (%s, %s, %s, %s, %s, %s)'''
+			# cursor.execute(ins, ())
+
+
+@app.route('/manageTags', methods=['GET', 'POST'])
+def manageTags():
+	return render_template('tags.html')
+
+
+@app.route('/tags')
+def tags(): 
+	return render_template('tags.html')
+
+
+
 
 app.secret_key = 'some key that you will never guess'
 #Run the app on localhost port 5000
