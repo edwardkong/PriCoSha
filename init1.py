@@ -294,10 +294,10 @@ def addFriend():
 				return render_template('friends.html', error = error)
 			else:
 				ins = '''INSERT into member values (%s, %s, %s)'''
-				cursor.execute(ins, (data[0]["username"], friendgroup, username))
+				cursor.execute(ins, (data3[0]["username"], friendgroup, username))
 				conn.commit()
 				cursor.close()
-				print(data[0]["username"])
+				print(data3[0]["username"])
 				return redirect(url_for('friends'))
 	else:
 		error = "This friendgroup does not exist!"
@@ -313,7 +313,7 @@ def users():
 	users = cursor.fetchall()
 	cursor.close()
 	return render_template('users.html', users = users)
-	
+
 app.secret_key = 'some key that you will never guess'
 #Run the app on localhost port 5000
 #debug = True -> you don't have to restart flask
