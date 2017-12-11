@@ -173,11 +173,11 @@ def logout():
 def friends():
         username = session['username']
         cursor = conn.cursor();
-        query = '''SELECT DISTINCT username FROM person Natural Join member
-                WHERE member.group_name = group_name
-                AND member.username_creator = username_creator
-                AND username != %s'''
-        cursor.execute(query, username)
+        query = '''SELECT DISTINCT username FROM member
+                WHERE username != %s
+                AND username_creator IN (SELECT username_creator FROM member WHERE username = %s)
+                AND group_name IN (SELECT group_name FROM member WHERE username = %s)'''
+        cursor.execute(query, (username, username, username))
         yourFriends = cursor.fetchall()
         print yourFriends
         return render_template('friends.html', urFriends = yourFriends)
