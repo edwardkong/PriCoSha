@@ -260,6 +260,50 @@ def sendMessage():
 	cursor.close()
 	return redirect(url_for('messages'))
 
+@app.route('/add_friend', methods=['GET', 'POST'])
+def addFriend():
+	username = session['username']
+	cursor = conn.cursor()
+	f_name = request.form['first_name']
+	l_name = request.form['last_name']
+	friendgroup = request.form['friendgroup']
+	query = '''SELECT group_name FROM friendgroup WHERE group_name = %s'''
+	cursor.execute(query, (friendgroup))
+	data = cursor.fetchone()
+	if(data):
+		query2 = '''SELECT member.username FROM member WHERE member.username IN 
+		(SELECT person.username FROM person WHERE first_name = %s AND last_name = %s) AND
+		 group_name = %s '''
+		cursor.execute(query2, (f_name, l_name, friendgroup))
+		data2 = cursor.fetchone()
+		if(data2):
+			error = "This person is already in this friendgroup!"
+			print("This person is already in this friendgroup!")
+			return render_template('friends.html', error = error)
+		else:
+			query3 = '''SELECT username FROM person WHERE first_name = %s AND 
+			last_name = %s 
+			'''
+			cursor.execute(query3, (f_name, l_name))
+			data3 = cursor.fetchall();
+			if(len(data3) > 1):
+				error = "There are multiple people with that name!"
+				return render_template('friends.html', error = error)
+			elif(len(data3) == 0):
+				error = "This person does not exist!"
+				return render_template('friends.html', error = error)
+			else:
+				ins = '''INSERT into member values (%s, %s, %s)'''
+				cursor.execute(ins, (data[0]["username"], friendgroup, username))
+				conn.commit()
+				cursor.close()
+				print(data[0]["username"])
+				return redirect(url_for('friends'))
+	else: 
+		error = "This friendgroup does not exist!"
+		print("That didn't work!")
+		return render_template('friends.html', error = error)
+
 app.secret_key = 'some key that you will never guess'
 #Run the app on localhost port 5000
 #debug = True -> you don't have to restart flask
