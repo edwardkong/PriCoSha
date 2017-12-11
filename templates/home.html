@@ -44,7 +44,7 @@
 	{% for line in posts %}
 		<tr>
 			<td>
-				<i>{{line.content_name}}</i> <br>
+				<a href=/posts/{{line.ID}} ><i>{{line.content_name}}</i></a><br>
 				ID: {{line.ID}} <br>
 				Posted By: <i> {{line.username}} </i> ({{line.group_name}})<br>
 				{{line.timest}}
@@ -60,7 +60,7 @@
 	{% for line in public %}
 		<tr>
 			<td>
-				<i>{{line.content_name}}</i> <br>
+				<a href=/posts/{{line.ID}} ><i>{{line.content_name}}</i> </a><br>
 				ID: {{line.ID}} <br>
 				Posted By: <i>{{line.username}} </i> <br>
 				{{line.timest}}

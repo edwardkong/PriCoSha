@@ -114,6 +114,32 @@ def home():
 	cursor.close()
 	return render_template('home.html', username=username, posts=data, ownFG=ownedFG, public = public)
 
+@app.route('/posts/<int:post_id>')
+def showPost(post_id):
+	cursor = conn.cursor();
+	query = '''SELECT *
+	FROM content
+	WHERE id = %s'''
+	cursor.execute(query, post_id)
+	content = cursor.fetchall()
+
+	query = '''SELECT first_name, last_name
+	FROM content JOIN tag ON
+	content.id = tag.id JOIN person ON
+	tag.username_taggee = person.username
+	WHERE content.id = %s and status=1
+	'''
+	cursor.execute(query, post_id)
+	tags = cursor.fetchall()
+
+	query = '''SELECT comment.username, comment.timest, comment_text
+	FROM comment JOIN content ON
+	comment.id = content.id
+	WHERE content.id = %s '''
+	cursor.execute(query, post_id)
+	comments = cursor.fetchall()
+
+	return render_template('post.html', content = content, tags = tags, comments = comments)
 
 @app.route('/post', methods=['GET', 'POST'])
 def post():
