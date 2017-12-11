@@ -294,25 +294,43 @@ def addFriend():
 				return render_template('friends.html', error = error)
 			else:
 				ins = '''INSERT into member values (%s, %s, %s)'''
-				cursor.execute(ins, (data[0]["username"], friendgroup, username))
+				cursor.execute(ins, (data3[0]["username"], friendgroup, username))
 				conn.commit()
 				cursor.close()
-				print(data[0]["username"])
+				print(data3[0]["username"])
 				return redirect(url_for('friends'))
 	else: 
 		error = "This friendgroup does not exist!"
 		print("That didn't work!")
 		return render_template('friends.html', error = error)
 
-@app.route('/tagContent', methods=['GET', 'POST'])
-def tagContent():
-		username = session['username']
-		cursor = conn.cursor()
-		username_taggee = request.form['tag']
-		if(username_taggee == username):
-			return render_template('home.html')
-			# ins = '''INSERT into tag values (%s, %s, %s, %s, %s, %s)'''
-			# cursor.execute(ins, ())
+# @app.route('/tagContent', methods=['GET', 'POST'])
+# def tagContent():
+# 		username = session['username']
+# 		cursor = conn.cursor()
+# 		username_taggee = request.form['tag']
+# 		if(username_taggee == username):
+# 			ins = '''INSERT into tag values (%s, %s, %s, %s, %s, %s)'''
+# 			# help with this one line
+# 			# cursor.execute(ins, ())
+# 			# conn.commit()
+# 			# cursor.close()
+# 			return redirect(url_for('home'))
+# 		else:
+# 			#query to see if content item is visible(public or shared in friendgroup)
+# 			query = '''SELECT '''
+# 			cursor.execute(query, ())
+# 			data = cursor.fetchall()
+# 			if(data):
+# 				ins = '''INSERT into tag values (%s, %s, %s, %s, %s, %s)'''
+# 				# cursor.execute(ins, ())
+# 				# conn.commit()
+# 				# cursor.close()
+# 			else:
+# 				error = "Can not propose tag"
+# 				return render_template('home.html', error = error)
+
+
 
 
 @app.route('/manageTags', methods=['GET', 'POST'])
