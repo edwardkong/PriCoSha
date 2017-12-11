@@ -314,6 +314,40 @@ def users():
 	cursor.close()
 	return render_template('users.html', users = users)
 
+@app.route('/managetags')
+def managetags():
+	username = session['username']
+	cursor = conn.cursor()
+	query = '''SELECT username_tagger, content.content_name, content.id
+	FROM tag JOIN content ON
+	tag.id = content.id
+	WHERE username_taggee = %s AND status = 0 '''
+	cursor.execute(query, username)
+	pendingTags = cursor.fetchall()
+	cursor.close()
+	return render_template('managetags.html', pendingTags = pendingTags)
+
+@app.route('/approve/<post_id>')
+def approve(post_id):
+	username = session['username']
+	query = '''UPDATE tag SET status = 1
+	WHERE username_taggee = %s AND id = %s'''
+	cursor = conn.cursor()
+	cursor.execute(query, (username, post_id))
+	conn.commit()
+	cursor.close()
+	return redirect(url_for('managetags'))
+
+@app.route('/reject/<post_id>')
+def reject(post_id):
+	username = session['username']
+	query = '''DELETE FROM tag WHERE username_taggee = %s AND id = %s'''
+	cursor = conn.cursor()
+	cursor.execute(query, (username, post_id))
+	conn.commit()
+	cursor.close()
+	return redirect(url_for('managetags'))
+
 app.secret_key = 'some key that you will never guess'
 #Run the app on localhost port 5000
 #debug = True -> you don't have to restart flask
