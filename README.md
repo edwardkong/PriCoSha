@@ -39,6 +39,6 @@ A system​ ​for​ ​privately​ ​sharing​ ​content​ ​items among
 10. Manage Tags
 
 # Need to Implement
-3. Tag a content Item
-5. Defriend
-6. Delete post
+1. Tag a content Item
+2. Defriend
+3. Delete post
