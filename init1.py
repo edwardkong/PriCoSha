@@ -228,10 +228,10 @@ def createFG():
 def messages():
 	username = session['username']
 	cursor = conn.cursor();
-	query = '''SELECT DISTINCT username FROM person Natural Join member
-			WHERE member.group_name = group_name
-			AND member.username_creator = username_creator
-			AND username != %s'''
+	query = '''SELECT DISTINCT username FROM member
+			WHERE username != %s
+			AND username_creator IN (SELECT username_creator FROM member WHERE username = %s)
+			AND group_name IN (SELECT group_name FROM member WHERE username = %s)'''
 	cursor.execute(query, username)
 	yourFriends = cursor.fetchall()
 	print yourFriends
@@ -271,7 +271,7 @@ def addFriend():
 	cursor.execute(query, (friendgroup))
 	data = cursor.fetchone()
 	if(data):
-		query2 = '''SELECT member.username FROM member WHERE member.username IN 
+		query2 = '''SELECT member.username FROM member WHERE member.username IN
 		(SELECT person.username FROM person WHERE first_name = %s AND last_name = %s) AND
 		 group_name = %s '''
 		cursor.execute(query2, (f_name, l_name, friendgroup))
@@ -281,8 +281,8 @@ def addFriend():
 			print("This person is already in this friendgroup!")
 			return render_template('friends.html', error = error)
 		else:
-			query3 = '''SELECT username FROM person WHERE first_name = %s AND 
-			last_name = %s 
+			query3 = '''SELECT username FROM person WHERE first_name = %s AND
+			last_name = %s
 			'''
 			cursor.execute(query3, (f_name, l_name))
 			data3 = cursor.fetchall();
@@ -299,7 +299,7 @@ def addFriend():
 				cursor.close()
 				print(data[0]["username"])
 				return redirect(url_for('friends'))
-	else: 
+	else:
 		error = "This friendgroup does not exist!"
 		print("That didn't work!")
 		return render_template('friends.html', error = error)
