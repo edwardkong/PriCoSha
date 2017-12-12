@@ -1,0 +1,38 @@
+<html>
+<head>
+	<link rel = "stylesheet" href="/static/milligram.css"/>
+	<link rel = "stylesheet" href="/static/style.css"/>
+	<link rel="icon" type="image/gif" href="/static/icons/group-button.png" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+</head>
+<body>
+  <a class="button" href="/home"> Home </a>
+  <a class="button" href="/messages"> Messages </a>
+  <a class="button" href="/friendgroups"> FriendGroups </a>
+  <a class="button" href="/friends"> Friends </a>
+  <a class="button" href="/managetags"> Manage Tags </a>
+  <a class="button" href="/myposts"> My Posts </a>
+  <a class="button" href="/users"> Users </a>
+  <a class="button" href="/logout">Logout</a>
+  <br> <br>
+
+  <h1> Users </h1>
+  <table>
+    <th>Username </th> <th> First Name </th> <th> Last Name </th>
+  {% for line in users %}
+    <tr>
+      <td> {{line.username}} </td>
+      <td> {{line.first_name}} </td>
+      <td> {{line.last_name}} </td>
+    </tr>
+  {% endfor %}
+  </table>
+  <div>Icons made by
+    <a href="https://www.flaticon.com/authors/zurb" title="Zurb">Zurb</a> from
+    <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by
+    <a href="http://creativecommons.org/licenses/by/3.0/"
+    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
+  </div>
+</body>
+</html>

@@ -173,11 +173,11 @@ def logout():
 def friends():
         username = session['username']
         cursor = conn.cursor();
-        query = '''SELECT DISTINCT username FROM person Natural Join member
-                WHERE member.group_name = group_name
-                AND member.username_creator = username_creator
-                AND username != %s'''
-        cursor.execute(query, username)
+        query = '''SELECT DISTINCT username FROM member
+                WHERE username != %s
+                AND username_creator IN (SELECT username_creator FROM member WHERE username = %s)
+                AND group_name IN (SELECT group_name FROM member WHERE username = %s)'''
+        cursor.execute(query, (username, username, username))
         yourFriends = cursor.fetchall()
         print(yourFriends)
         return render_template('friends.html', urFriends = yourFriends)
@@ -228,11 +228,11 @@ def createFG():
 def messages():
 	username = session['username']
 	cursor = conn.cursor();
-	query = '''SELECT DISTINCT username FROM person Natural Join member
-			WHERE member.group_name = group_name
-			AND member.username_creator = username_creator
-			AND username != %s'''
-	cursor.execute(query, username)
+	query = '''SELECT DISTINCT username FROM member
+			WHERE username != %s
+			AND username_creator IN (SELECT username_creator FROM member WHERE username = %s)
+			AND group_name IN (SELECT group_name FROM member WHERE username = %s)'''
+	cursor.execute(query, (username, username, username))
 	yourFriends = cursor.fetchall()
 	print(yourFriends)
 	query = '''SELECT sender, timest, message FROM message WHERE recipient = %s ORDER BY timest DESC'''
@@ -271,7 +271,7 @@ def addFriend():
 	cursor.execute(query, (friendgroup))
 	data = cursor.fetchone()
 	if(data):
-		query2 = '''SELECT member.username FROM member WHERE member.username IN 
+		query2 = '''SELECT member.username FROM member WHERE member.username IN
 		(SELECT person.username FROM person WHERE first_name = %s AND last_name = %s) AND
 		 group_name = %s '''
 		cursor.execute(query2, (f_name, l_name, friendgroup))
@@ -281,8 +281,8 @@ def addFriend():
 			print("This person is already in this friendgroup!")
 			return render_template('friends.html', error = error)
 		else:
-			query3 = '''SELECT username FROM person WHERE first_name = %s AND 
-			last_name = %s 
+			query3 = '''SELECT username FROM person WHERE first_name = %s AND
+			last_name = %s
 			'''
 			cursor.execute(query3, (f_name, l_name))
 			data3 = cursor.fetchall();
@@ -299,51 +299,116 @@ def addFriend():
 				cursor.close()
 				print(data3[0]["username"])
 				return redirect(url_for('friends'))
-	else: 
+	else:
 		error = "This friendgroup does not exist!"
 		print("That didn't work!")
 		return render_template('friends.html', error = error)
 
-# @app.route('/tagContent', methods=['GET', 'POST'])
-# def tagContent():
-# 		username = session['username']
-# 		cursor = conn.cursor()
-# 		username_taggee = request.form['tag']
-# 		if(username_taggee == username):
-# 			ins = '''INSERT into tag values (%s, %s, %s, %s, %s, %s)'''
-# 			# help with this one line
-# 			# cursor.execute(ins, ())
-# 			# conn.commit()
-# 			# cursor.close()
-# 			return redirect(url_for('home'))
-# 		else:
-# 			#query to see if content item is visible(public or shared in friendgroup)
-# 			query = '''SELECT '''
-# 			cursor.execute(query, ())
-# 			data = cursor.fetchall()
-# 			if(data):
-# 				ins = '''INSERT into tag values (%s, %s, %s, %s, %s, %s)'''
-# 				# cursor.execute(ins, ())
-# 				# conn.commit()
-# 				# cursor.close()
-# 			else:
-# 				error = "Can not propose tag"
-# 				return render_template('home.html', error = error)
+# <<<<<<< HEAD
+@app.route('/tagContent', methods=['GET', 'POST'])
+def tagContent():
+		username = session['username']
+		cursor = conn.cursor()
+		username_taggee = request.form['tag']
+		content_id = request.form['id']
+		timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+		query = '''SELECT username FROM person WHERE username = %s'''
+		cursor.execute(query, (username_taggee))
+		data = cursor.fetchone()
+		if(data):
+			query = '''SELECT id, username_tagger, username_taggee FROM tag WHERE 
+			id = %s AND username_tagger = %s AND username_taggee = %s'''
+			cursor.execute(query, (content_id, username, username_taggee))
+			data = cursor.fetchone()
+			if(data):
+				error = "This person has already been tagged!"
+				return render_template('home.html', error = error)
+			if(username_taggee == username):
+				ins = '''INSERT into tag values (%s, %s, %s, %s, %s)'''
+				cursor.execute(ins, (content_id, username, username_taggee, timestamp, 1))
+				conn.commit()
+				cursor.close()
+				print("Data has been commited")
+				return redirect(url_for('home'))
+			else:
+				#query to see if content item is visible(public or shared in friendgroup)
+				query = '''SELECT id FROM content WHERE public = %s AND id = %s'''
+				cursor.execute(query, (1, content_id))
+				data = cursor.fetchone()
+				if(data):
+					ins = '''INSERT into tag values (%s, %s, %s, %s, %s)'''
+					cursor.execute(ins, (content_id, username, username_taggee, timestamp, 0))
+					conn.commit()
+					cursor.close()
+					print("Content item was public, so tag was added")
+					return redirect(url_for('home'))
+				else:
+					query = '''SELECT member.username FROM share, member WHERE id = %s AND
+					share.group_name = member.group_name AND member.username = %s'''
+					cursor.execute(query, (content_id, username_taggee))
+					data = cursor.fetchall()
+					if(data):
+						ins = '''INSERT into tag values (%s, %s, %s, %s, %s)'''
+						cursor.execute(ins, (content_id, username, username_taggee, timestamp, 0))
+						conn.commit()
+						cursor.close()
+						print(data)
+						print("This content is private, but is shared with the friendgroup of the taggee")
+						return redirect(url_for('home'))
+					else:
+						error = "Can not propose tag, content item not visible to that user"
+						return render_template('home.html', error = error )
+		else:
+			error = "This user does not exist!"
+			return render_template('home.html', error = error)
 
 
 
+# =======
+@app.route('/users')
+def users():
+	cursor = conn.cursor()
+	query = '''SELECT username, first_name, last_name
+	FROM person'''
+	cursor.execute(query)
+	users = cursor.fetchall()
+	cursor.close()
+	return render_template('users.html', users = users)
 
-@app.route('/manageTags', methods=['GET', 'POST'])
-def manageTags():
-	return render_template('tags.html')
+@app.route('/managetags')
+def managetags():
+	username = session['username']
+	cursor = conn.cursor()
+	query = '''SELECT username_tagger, content.content_name, content.id
+	FROM tag JOIN content ON
+	tag.id = content.id
+	WHERE username_taggee = %s AND status = 0 '''
+	cursor.execute(query, username)
+	pendingTags = cursor.fetchall()
+	cursor.close()
+	return render_template('managetags.html', pendingTags = pendingTags)
 
+@app.route('/approve/<post_id>')
+def approve(post_id):
+	username = session['username']
+	query = '''UPDATE tag SET status = 1
+	WHERE username_taggee = %s AND id = %s'''
+	cursor = conn.cursor()
+	cursor.execute(query, (username, post_id))
+	conn.commit()
+	cursor.close()
+	return redirect(url_for('managetags'))
 
-@app.route('/tags')
-def tags(): 
-	return render_template('tags.html')
-
-
-
+@app.route('/reject/<post_id>')
+def reject(post_id):
+	username = session['username']
+	query = '''DELETE FROM tag WHERE username_taggee = %s AND id = %s'''
+	cursor = conn.cursor()
+	cursor.execute(query, (username, post_id))
+	conn.commit()
+	cursor.close()
+	return redirect(url_for('managetags'))
+# >>>>>>> 0f0d188631d065ca432b3fe22fe52794816e3d17
 
 app.secret_key = 'some key that you will never guess'
 #Run the app on localhost port 5000

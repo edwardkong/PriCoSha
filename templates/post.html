@@ -11,6 +11,7 @@
   <a class="button" href="/messages"> Messages </a>
   <a class="button" href="/friendgroups"> FriendGroups </a>
   <a class="button" href="/friends"> Friends </a>
+  <a class="button" href="/managetags"> Manage Tags </a>
   <a class="button" href="/myposts"> My Posts </a>
   <a class="button" href="/users"> Users </a>
   <a class="button" href="/logout">Logout</a>
@@ -19,7 +20,17 @@
   <h1> {{content[0].content_name}} </h1>
   ID: {{content[0].id}} <br>
   Posted By: {{content[0].username}}
-  {{content[0].timest}} <br>
+  {{content[0].timest}} <br> <br> <br>
+  <p>Tag yourself or one of your friends</p>
+  <form  action="/tagContent" method="POST">
+    <input type="hidden" name = "id" value = {{content[0].id}} required/>
+    <input type="hidden" name = "taggee" value = {{content[0].username}} required/>
+    <input type="text" name = "tag" placeholder="username" required/> </br>
+    <input type="submit" value = "Tag" />
+        {% if error %}
+          <p class="error"><strong>Error:</strong> {{error}}</p>
+        {% endif %}
+  </form>
   <b> Tags: </b>
   {% for line in tags %}
     {{line.first_name}} {{line.last_name}}  &nbsp

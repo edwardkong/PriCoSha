@@ -35,10 +35,10 @@ A system​ ​for​ ​privately​ ​sharing​ ​content​ ​items among
 6. Direct Messaging
 7. Create and View FriendGroups
 8. View content details (Tags, comments)
+9. Add friend
+10. Manage Tags
 
 # Need to Implement
-1. Manage Tags
-3. Tag a content Item
-4. Add friend
-5. Defriend
-6. Delete post
+1. Tag a content Item
+2. Defriend
+3. Delete post
